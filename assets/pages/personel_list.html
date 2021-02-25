@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personel Listesi</title>
+</head>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+    .container h3{
+        text-align: center;
+    }
+    .rowPersonnel{
+        background-color: rgb(70, 44, 44);
+        color: white;
+        border-radius: 10px;
+        margin: 10px 0px;
+        padding: 10px 20px ;
+    }
+    .rowPersonnel .colPersonnel{
+        width: 90%;
+        display: inline-block;
+    }
+    .rowPersonnel .colIslem{
+        display: inline-block;
+    }
+    .rowPersonnel .colPersonnel p{
+        display: inline-block;
+        margin: 0px;
+    }
+    .btnDelete{
+        display: inline-block;
+        background-color: rgb(255, 0, 0);
+        color: white;
+        margin: 0px;
+        border: none;
+        border-radius: 20%;
+        padding: 10px 15px;
+    }
+    .btnDelete:hover{
+        background-color: rgb(201, 3, 3);
+    }
+    .btnDelete:focus{
+        background-color: rgb(82, 2, 2);
+    }
+    
+    .rowAlert{
+        background-color: rgb(125, 255, 3);
+        padding: 10px 0;
+        border-radius: 10px;
+        text-align: center;
+        margin: 10px 0px;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <h3>Personel Listesi</h3>
+        <!--Buraya dinamik olarak row divi gelecek. Scriptten-->
+        <!-- <div class="rowPersonnel">
+            <div class="colPersonnel">
+                <p class="personnel">12345678912345 Deneme Deneme</p>
+            </div>
+            <div class="colIslem">
+                <button class="btnDelete" atrbt_tc="12345678912345">X</button>
+            </div>
+        </div> -->
+    </div>
+    <div class="rowAlert">
+        Herhangi personel kaydı bulunamamaktadır!.
+    </div>
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
+        //------------------------------- Eklenen personel için html tagları üretimi -------------------------------
+        //ekleme gelmeden control edilmeli
+        fncCheckPersonCount();
+        ipcRenderer.on("mainjs:AddedPersonelList", (e, objEklenenList) => {
+            fncDrawRowInHtml(objEklenenList);
+        });
+        //------------------------------------------------------- Veri Tabanı İşlemleri -------------------------------------------------------
+        //mysql DB'dan verileri çek
+        ipcRenderer.on("mainjs:db_init", (err, table) => {
+            table.forEach(element => {
+                fncDrawRowInHtml(element);
+            });
+        })
+//------------------------------------------------------- Fonksiyonlar -------------------------------------------------------
+        //container içindeki eleman sayısını kontrol eder.
+        function fncCheckPersonCount() {
+            const divContainer = document.querySelector(".container");
+            const divAlert = document.querySelector(".rowAlert");
+
+            if (divContainer.children.length !== 1) {
+                divAlert.style.display = "none"; //otomatik tanımlama yoktu
+            } else {
+                divAlert.style.display = "block"
+            }
+        }
+        //eklenen personel için HTML taglarini çizdir
+        function fncDrawRowInHtml(table) {
+            //container...
+            const divContainer = document.querySelector(".container");
+            //row
+            const row = document.createElement("div");
+            row.className = "rowPersonnel"
+            //col..
+            const colPerson = document.createElement("div");
+            colPerson.className = "colPersonnel"
+            //button div
+            const colIslem = document.createElement("div");
+            colIslem.className = "colIslem"
+            //p...
+            const p = document.createElement("p");
+            p.className = "personnel";
+            p.innerText = table.tc + "  | " + table.ad + " " + table.soyad;
+            //sil btn - X
+            const btnSil = document.createElement("button");
+            btnSil.className = "btnDelete"
+            btnSil.innerText = "X"
+            //butona tc adında öz nitelik ata
+            btnSil.setAttribute("atrbt_tc",table.tc)
+            //silme işlemi
+            btnSil.addEventListener("click", (e) => {
+                if (confirm("Bu kişiyi silmek istediğinzden emin misiniz?")) {
+                    e.target.parentNode.parentNode.remove();    //html üzerinden siler
+                    ipcRenderer.send("personel_list:mysqlRemoveWithTc",e.target.getAttribute("atrbt_tc"))   //db'den silmek için gerekli bilgiyi gönder
+                    fncCheckPersonCount();
+                }
+            })
+            //html elemanlarını iç içe geçirdik
+            colPerson.appendChild(p);
+            colIslem.appendChild(btnSil);
+            row.appendChild(colPerson)
+            row.appendChild(colIslem);
+            divContainer.appendChild(row);
+            //ekleme işi bittikten sonra da kontrol edilmeli
+            fncCheckPersonCount();
+        }    
+    </script>
+</body>
+</html>

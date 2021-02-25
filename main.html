@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Puantaj</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        /* MAİN */
+        main{
+            text-align: center;
+            background-color: rgb(177, 58, 58);
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+        }
+        /* FOOTER */
+        footer{
+            position: fixed;
+            bottom: 1%;
+            left: 0;
+            width: 100%;
+            background-color: rgb(177, 58, 58);
+            color: white;
+            padding:15px;
+        }
+        footer div{
+            display: inline-block;
+        }
+        footer .totalPerson{
+            width: 50%;
+            float: left;
+        }
+        footer .clsInfo{
+            float: left;
+            width: 50%;
+        }
+        footer .clsInfo #idInfo{
+            color: rgb(84, 255, 78);
+        }
+        #idBtnYeniPersonel{
+            padding: 4px;
+            border-radius: 7px;
+            border: none;
+        }
+        #idBtnYeniPersonel:hover{
+            cursor: pointer;
+        }
+        img{
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <img src="assets/icons/person.png" alt="">
+        <h1>Puantaj</h1>
+        <div class="row">
+            <div>
+                <button id="idBtnYeniPersonel">Personel Ekle Penceresi Aç</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="totalPerson">
+            <b>Toplam Personel: </b><span id="idTotalPerson">13</span>
+        </div>
+        <div class="clsInfo">
+            <b>Bilgi: </b><span id="idInfo">...</span>
+        </div>
+    </footer>
+
+
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer} = electron;
+        let yeniPersonelEkle = document.querySelector("#idBtnYeniPersonel");
+        let info = document.querySelector("#idInfo")
+        
+        yeniPersonelEkle.addEventListener("click", ()=>{
+            ipcRenderer.send("mainhtml:yeniPersonelEkle");
+        })
+        //INFO personel Ekleme
+        ipcRenderer.on("main.js:EklemeBasarili",()=>{           
+            setTimeout(time,3000);
+            info.innerText = "Kişi Başarılı şekikde sisteme eklendi!"
+            function time() {
+                info.innerText = "";
+            }           
+        })
+    </script>
+</body>
+</html>

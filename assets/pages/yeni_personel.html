@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Personel</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        #idDivForm{
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;        
+        }
+        #idDivForm h3{
+            text-align: center;
+        }
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #idKaydet{
+          width: 48%;
+          background-color: #4CAF50;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 1%;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          float: left;
+        }
+        #idKaydet:hover {
+            background-color: #45a049;
+        }
+        #idVazgec{
+          width: 48%;
+          background-color: #c40c0c;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 1%;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          float: left;
+        }
+        #idVazgec:hover {
+            background-color: #af0909;
+        }
+
+
+        /* button{
+            margin: 3% 0 3% 1%;
+            float: right;
+        }
+        input[type=text]{
+            border: 3px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            margin: 1% 0;
+            -webkit-transition: 0.5s;
+            transition: 0.5s;
+            outline: none;
+        }
+        input[type=text]:focus{
+            border: 3px solid black;
+        } */
+    </style>
+</head>
+<body>
+    <div id="idDivForm">
+        <form action="/action_page.php">
+            <h3 class="text-center">Kişisel Bilgiler</h3>
+            <hr>
+           <label for="tc">TC</label><br>
+           <input name="tc" id="idTc" type="text" placeholder="*TC numaranız.."><br>
+           <label for="ad">Ad</label><br>
+           <input name="ad" id="idAd" type="text" placeholder="*Adınız.."><br>
+           <label for="soyad">Soyad</label><br>
+           <input name="soyad" id="idSoyad" type="text" placeholder="*Soyadınız.."><br>
+          <!-- Formun bu kısmı backend e bağlanmadı -->
+          <h3 class="text-center">İş Tanımı</h3>
+          <hr>
+           <label for="gorev">Görevi</label><br>
+           <input name="gorev" id="idGorev" type="text" placeholder="Orn: Sıvacı"><br>
+           <label for="maasTuru">Maaş Türü</label>
+           <select id="idMaasTuru" name="maasTuru">
+             <option value="saatlik">Saatlik</option>
+             <option value="gunluk">Günlük</option>
+             <option value="aylık">Aylık</option>
+           </select>
+           <label for="ucret">Maaş Ücreti (₺)</label><br>
+           <input name="ucret" id="idGorev" type="text" placeholder="Orn: 17,78"><br>
+           <label for="gunlukSaat">Günlük Net Çalışma Saati</label><br>
+           <input name="gunlukSaat" id="idGunlukSaat" type="text" placeholder="Orn: 7,5"><br>
+
+          
+          
+           <button id="idVazgec">Vazgeç</button>
+           <button id="idKaydet">Kaydet</button>
+        </form>   
+    </div>
+
+
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron;   //veri göndermeyi sağlar
+        let btnVazgec = document.querySelector("#idVazgec");
+        let btnKaydet = document.querySelector("#idKaydet");
+        let txtAd = document.querySelector("#idAd");
+        let txtSoyad = document.querySelector("#idSoyad");
+        let txtTc = document.querySelector("#idTc");
+
+        btnVazgec.addEventListener("click", ()=>{
+            ipcRenderer.send("yeni_personel:vazgec")
+        });
+        btnKaydet.addEventListener("click", ()=>{
+            ipcRenderer.send("yeni_personel:save", txtTc.value, txtAd.value, txtSoyad.value)
+        })
+
+    </script>
+</body>
+</html>

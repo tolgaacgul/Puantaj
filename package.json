@@ -1,0 +1,22 @@
+{
+  "name": "puantaj",
+  "productName": "Puantaj App",
+  "version": "1.0.0",
+  "description": "Bu yazılım tolgaacgul tarafından yazılmıştır.",
+  "main": "main.js",
+  "author": "Tolga Açgül",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/app.icns --prune=true --out=output-file",
+    "package-win": "electron-packager . puantaj --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/app.ico --prune=true --out=output-file --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Puantaj app\"",
+    "package-linux": "electron-packager . puantaj --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/linux/app.png --prune=true --out=output-file"
+  },
+  "dependencies": {
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {
+    "electron": "^11.3.0",
+    "electron-packager": "^15.2.0"
+  }
+}
